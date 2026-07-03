@@ -1,0 +1,30 @@
+[package]
+name = "trickydata"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.70"
+description = "Rust client for the trickydata corpus of deliberately tricky test inputs."
+readme = "README.md"
+license = "MIT"
+authors = ["Steve Stagg"]
+keywords = ["testing", "fuzzing", "unicode", "ieee-754", "corpus"]
+categories = ["development-tools::testing"]
+
+[dependencies]
+flate2 = "1"
+md5 = "0.7"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+trickydata-macros = { path = "trickydata-macros" }
+unicode-segmentation = { version = "1", optional = true }
+half = { version = "2", optional = true }
+
+[features]
+default = []
+# Extended-grapheme-cluster string sizing (UAX #29) needs a segmentation engine.
+sizing = ["dep:unicode-segmentation"]
+# Expose a native `half::f16` target type (f16 inputs already fold into f32/f64).
+half = ["dep:half"]
+
+[package.metadata.docs.rs]
+all-features = true
