@@ -1,6 +1,7 @@
 //! Behavioral tests for the trickydata Rust client against the bundled corpus.
 
 use std::collections::HashSet;
+use std::path::Path;
 
 use trickydata::{Corpus, DecodeAs, Example, PairHint, SizeUnit, Sort, Target};
 
@@ -360,7 +361,11 @@ fn version_resolution_seam() {
 
 #[test]
 fn loads_local_trickydata_artifact() {
-    let c = Corpus::from_path("../trickydata-inputs/trickydata.trickydata").unwrap();
+    let path = [".inputs/trickydata.trickydata", "../trickydata-inputs/trickydata.trickydata"]
+        .into_iter()
+        .find(|path| Path::new(path).is_file())
+        .expect("expected a downloaded or sibling trickydata.trickydata artifact");
+    let c = Corpus::from_path(path).unwrap();
     assert_eq!(c.version(), corpus().version());
     assert!(!c.inputs().is_empty());
 }
