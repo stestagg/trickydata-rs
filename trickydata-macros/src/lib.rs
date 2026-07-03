@@ -5,7 +5,7 @@ use std::io::Read;
 use proc_macro::{Delimiter, Literal, TokenStream, TokenTree};
 use serde::Deserialize;
 
-const ARTIFACT: &[u8] = include_bytes!("../../data/trickydata.trickydata");
+const ARTIFACT: &[u8] = include_bytes!("../data/trickydata.trickydata");
 const MAGIC: &[u8] = b"trickydata:";
 
 #[proc_macro]

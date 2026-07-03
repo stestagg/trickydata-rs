@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 rust-version = "1.70"
 license = "MIT"
+include = ["Cargo.toml", "src/**", "data/trickydata.trickydata"]
 
 [lib]
 proc-macro = true

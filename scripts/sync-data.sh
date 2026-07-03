@@ -14,14 +14,16 @@ set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 crate_root="$(dirname "$here")"
 src="${1:-$crate_root/../trickydata-inputs}"
-dest="$crate_root/data"
+destinations=("$crate_root/data" "$crate_root/trickydata-macros/data")
 
-mkdir -p "$dest"
 for name in trickydata.trickydata; do
     if [[ ! -f "$src/$name" ]]; then
         echo "error: $src/$name not found" >&2
         exit 1
     fi
-    cp "$src/$name" "$dest/$name"
-    echo "copied $src/$name -> $dest/$name"
+    for dest in "${destinations[@]}"; do
+        mkdir -p "$dest"
+        cp "$src/$name" "$dest/$name"
+        echo "copied $src/$name -> $dest/$name"
+    done
 done

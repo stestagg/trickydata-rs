@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Derive release versions
+        id: versions
+        run: |
+          client_version="${GITHUB_REF_NAME#v}"
+          inputs_version="${client_version%%+*}"
+          echo "client_version=$client_version" >> "$GITHUB_OUTPUT"
+          echo "inputs_tag=v$inputs_version" >> "$GITHUB_OUTPUT"
+
+      - name: Download matching released corpus
+        env:
+          GH_TOKEN: ${{ secrets.TRICKYDATA_INPUTS_TOKEN || github.token }}
+          INPUTS_TAG: ${{ steps.versions.outputs.inputs_tag }}
+        run: |
+          mkdir -p .inputs
+          gh release download "$INPUTS_TAG" \
+            --repo stestagg/trickydata-inputs \
+            --pattern 'trickydata.trickydata' \
+            --dir .inputs \
+            --clobber
+          test -f .inputs/trickydata.trickydata
+
+      - name: Vendor corpus
+        run: scripts/sync-data.sh .inputs
+
+      - name: Test
+        run: cargo test --workspace --locked --all-features
+
+      - name: Build package
+        run: |
+          cargo package --workspace --locked --allow-dirty
+          mkdir -p dist
+          find target/package -name '*.crate' -exec cp {} dist/ \;
+
+      - name: Build docs
+        run: |
+          cargo doc --workspace --locked --all-features --no-deps
+          tar -czf "dist/trickydata-rs-docs-${{ steps.versions.outputs.client_version }}.tar.gz" -C target/doc .
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*
