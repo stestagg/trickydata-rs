@@ -42,17 +42,17 @@ jobs:
         run: scripts/sync-data.sh .inputs
 
       - name: Test
-        run: cargo test --workspace --locked --all-features
+        run: cargo test --workspace --all-features
 
       - name: Build package
         run: |
-          cargo package --workspace --locked --allow-dirty
+          cargo package --workspace --allow-dirty
           mkdir -p dist
           find target/package -name '*.crate' -exec cp {} dist/ \;
 
       - name: Build docs
         run: |
-          cargo doc --workspace --locked --all-features --no-deps
+          cargo doc --workspace --all-features --no-deps
           tar -czf "dist/trickydata-rs-docs-${{ steps.versions.outputs.client_version }}.tar.gz" -C target/doc .
 
       - name: Create release
