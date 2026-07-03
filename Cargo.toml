@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 rust-version = "1.70"
 description = "Rust client for the trickydata corpus of deliberately tricky test inputs."
+homepage = "https://github.com/stestagg/trickydata-rs"
 readme = "README.md"
 license = "MIT"
 authors = ["Steve Stagg"]

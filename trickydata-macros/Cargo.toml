@@ -1,5 +1,8 @@
 [package]
 name = "trickydata-macros"
+description = "static example generation macros for the trickydata corpus (deliberately tricky test inputs)."
+homepage = "https://github.com/stestagg/trickydata-rs"
+repository = "https://github.com/stestagg/trickydata-rs"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.70"
